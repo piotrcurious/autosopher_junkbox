@@ -1,0 +1,176 @@
+#include "autosopher.h"
+
+// Create a new memory node
+Node* create_node(int f1, int f2, double payload, int outcome) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (!newNode) {
+        fprintf(stderr, "Error: Memory allocation failed for Node.\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->key_feature1 = f1;
+    newNode->key_feature2 = f2;
+    newNode->data_payload = payload;
+    newNode->outcome = outcome;
+    newNode->access_count = 1;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Free allocated tree memory
+void free_tree(Node *root) {
+    if (root == NULL) return;
+    free_tree(root->left);
+    free_tree(root->right);
+    free(root);
+}
+
+// Autosophy "Self-Assembly" Learning Function:
+// Instantly grows or updates hyperspace tree structure without epochs or backprop.
+void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome) {
+    if (*root == NULL) {
+        *root = create_node(f1, f2, payload, outcome);
+        return;
+    }
+
+    Node *current = *root;
+    while (1) {
+        if (current->key_feature1 == f1 && current->key_feature2 == f2) {
+            current->data_payload = payload;
+            current->outcome = outcome;
+            current->access_count++;
+            return;
+        }
+
+        if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
+            if (current->left == NULL) {
+                current->left = create_node(f1, f2, payload, outcome);
+                break;
+            }
+            current = current->left;
+        } else {
+            if (current->right == NULL) {
+                current->right = create_node(f1, f2, payload, outcome);
+                break;
+            }
+            current = current->right;
+        }
+    }
+}
+
+// Instant Address-Based Recall
+int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome) {
+    Node *current = root;
+    while (current != NULL) {
+        if (current->key_feature1 == f1 && current->key_feature2 == f2) {
+            if (out_payload) *out_payload = current->data_payload;
+            if (out_outcome) *out_outcome = current->outcome;
+            return 1; // Found
+        }
+        if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+    }
+    return 0; // Not found (un-encountered pattern)
+}
+
+// Tree Analysis Helper
+static void compute_tree_stats_recursive(Node *root, int current_depth, TreeStats *stats) {
+    if (root == NULL) return;
+
+    stats->node_count++;
+    stats->memory_bytes += sizeof(Node);
+    if (current_depth > stats->max_depth) {
+        stats->max_depth = current_depth;
+    }
+
+    compute_tree_stats_recursive(root->left, current_depth + 1, stats);
+    compute_tree_stats_recursive(root->right, current_depth + 1, stats);
+}
+
+void get_tree_stats(Node *root, TreeStats *stats) {
+    stats->node_count = 0;
+    stats->max_depth = 0;
+    stats->memory_bytes = 0;
+    if (root != NULL) {
+        compute_tree_stats_recursive(root, 1, stats);
+    }
+}
+
+void print_tree_structure(Node *root, int level) {
+    if (root == NULL) return;
+
+    print_tree_structure(root->right, level + 1);
+
+    for (int i = 0; i < level; i++) printf("    ");
+    printf("[%d,%d] (hits:%d, out:%d)\n",
+           root->key_feature1, root->key_feature2, root->access_count, root->outcome);
+
+    print_tree_structure(root->left, level + 1);
+}
+
+void sweep_tree_noise(Node *root, int min_frequency_threshold, int *noise_count, int *total_count) {
+    if (root == NULL) return;
+
+    (*total_count)++;
+    if (root->access_count < min_frequency_threshold) {
+        (*noise_count)++;
+        printf("Node [%d, %d] (hits: %d) => FLAGGED AS NOISE / TRANSIENT\n",
+               root->key_feature1, root->key_feature2, root->access_count);
+    } else {
+        printf("Node [%d, %d] (hits: %d) => VERIFIED KNOWLEDGE NODE\n",
+               root->key_feature1, root->key_feature2, root->access_count);
+    }
+
+    sweep_tree_noise(root->left, min_frequency_threshold, noise_count, total_count);
+    sweep_tree_noise(root->right, min_frequency_threshold, noise_count, total_count);
+}
+
+// Forward Learning Demo Module Function
+void run_forward_learning_demo(void) {
+    Node *hyperspace_library = NULL;
+
+    printf("\n==================================================\n");
+    printf("   DEMO 1: Zero-Epoch Forward Learning Self-Assembly\n");
+    printf("==================================================\n");
+
+    printf("\n--- Phase 1: Self-Assembling Logic Gate Patterns (XOR Simulation) ---\n");
+    int training_data[4][3] = {
+        {0, 0, 0},
+        {0, 1, 1},
+        {1, 0, 1},
+        {1, 1, 0}
+    };
+
+    for (int i = 0; i < 4; i++) {
+        int f1 = training_data[i][0];
+        int f2 = training_data[i][1];
+        int outcome = training_data[i][2];
+        autosophy_learn(&hyperspace_library, f1, f2, 0.0, outcome);
+        printf("[Autosopher Growth] Learned pattern [%d, %d] => Outcome: %d\n", f1, f2, outcome);
+    }
+
+    TreeStats stats;
+    get_tree_stats(hyperspace_library, &stats);
+    printf("\n--- Hyperspace Memory Tree Visualization ---\n");
+    print_tree_structure(hyperspace_library, 0);
+    printf("\nHyperspace Stats: Total Nodes: %d | Depth: %d | Memory: %zu bytes\n",
+           stats.node_count, stats.max_depth, stats.memory_bytes);
+
+    printf("\n--- Phase 2: Instant Address-Based Recall (Zero Matrix Multiplication) ---\n");
+    for (int i = 0; i < 4; i++) {
+        int f1 = training_data[i][0];
+        int f2 = training_data[i][1];
+        int retrieved_outcome = -1;
+        int hit = autosophy_recall(hyperspace_library, f1, f2, NULL, &retrieved_outcome);
+        if (hit) {
+            printf("Address Query [%d, %d] => SUCCESS: Retrieved Output = %d\n", f1, f2, retrieved_outcome);
+        } else {
+            printf("Address Query [%d, %d] => UNKNOWN PATTERN\n", f1, f2);
+        }
+    }
+
+    free_tree(hyperspace_library);
+}
