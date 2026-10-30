@@ -49,6 +49,7 @@ Node._fields_ = [
     ('version', ctypes.c_int),
     ('deep_belief_code', ctypes.c_int),
     ('generative_id', ctypes.c_int),
+    ('height', ctypes.c_int),
     ('left', ctypes.POINTER(Node)),
     ('right', ctypes.POINTER(Node))
 ]

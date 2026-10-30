@@ -22,7 +22,7 @@ typedef enum {
     EPISTEMIC_UNRESOLVED = 4
 } EpistemicStatus;
 
-// Autosopher Hyperspace Node Structure
+// Autosopher Hyperspace Node Structure (Self-Balancing AVL Hyperspace Tree)
 typedef struct Node {
     int key_feature1;      // Activation key / feature 1
     int key_feature2;      // Activation key / feature 2
@@ -33,6 +33,7 @@ typedef struct Node {
     int version;           // Record version for dependency updates
     int deep_belief_code;  // Correlated Deep Belief state / code
     int generative_id;     // Assigned generative template ID
+    int height;            // AVL node height for self-balancing
     struct Node *left;
     struct Node *right;
 } Node;
@@ -48,7 +49,7 @@ typedef struct TreeStats {
 Node* create_node(int f1, int f2, double payload, int outcome);
 void free_tree(Node *root);
 
-// Autosophy Learning & Recall
+// Autosophy Learning & Recall (Self-Balancing AVL Hyperspace)
 void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome);
 void autosophy_learn_typed(Node **root, int f1, int f2, double payload, int outcome, int status, int version);
 int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome);
@@ -57,6 +58,10 @@ int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int 
 // Deep Belief, Inference Extension & On-The-Fly Autocoding
 int autosophy_correlate_deep_belief(Node *root, int f1, int f2, int *out_deep_belief_code, int *out_generative_id, double *out_seed);
 int autosophy_autocode_category(Node **root, int f1, int f2, int deep_belief_code, int generative_id, double seed, int outcome);
+
+// Hyperspace Disk Persistence (Serialization / Deserialization)
+int autosophy_save_tree(Node *root, const char *filepath);
+int autosophy_load_tree(Node **root, const char *filepath);
 
 // Analysis & Stats
 void get_tree_stats(Node *root, TreeStats *stats);
