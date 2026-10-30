@@ -24,13 +24,15 @@ typedef enum {
 
 // Autosopher Hyperspace Node Structure
 typedef struct Node {
-    int key_feature1;
-    int key_feature2;
-    double data_payload;
-    int outcome;           // Discrete outcome (e.g., classification / logic gate)
+    int key_feature1;      // Activation key / feature 1
+    int key_feature2;      // Activation key / feature 2
+    double data_payload;   // Data payload / generative seed / energy
+    int outcome;           // Discrete outcome / category class
     int access_count;      // Frequency tracking for noise detection
     int epistemic_status;  // Epistemic status tracking (0: Grounded, 1: Derived, etc.)
     int version;           // Record version for dependency updates
+    int deep_belief_code;  // Correlated Deep Belief state / code
+    int generative_id;     // Assigned generative template ID
     struct Node *left;
     struct Node *right;
 } Node;
@@ -52,6 +54,10 @@ void autosophy_learn_typed(Node **root, int f1, int f2, double payload, int outc
 int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome);
 int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int *out_outcome, int *out_status, int *out_version);
 
+// Deep Belief, Inference Extension & On-The-Fly Autocoding
+int autosophy_correlate_deep_belief(Node *root, int f1, int f2, int *out_deep_belief_code, int *out_generative_id, double *out_seed);
+int autosophy_autocode_category(Node **root, int f1, int f2, int deep_belief_code, int generative_id, double seed, int outcome);
+
 // Analysis & Stats
 void get_tree_stats(Node *root, TreeStats *stats);
 void print_tree_structure(Node *root, int level);
@@ -67,5 +73,6 @@ void run_forward_learning_demo(void);
 void run_noise_transcendence_demo(void);
 void run_interactive_hyperspace(void);
 void run_hybrid_tf_demo(void);
+void run_generative_demo(void);
 
 #endif // AUTOSOPHER_H

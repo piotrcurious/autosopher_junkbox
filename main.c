@@ -11,6 +11,17 @@ void run_hybrid_tf_demo(void) {
     }
 }
 
+void run_generative_demo(void) {
+    printf("\n==================================================\n");
+    printf("   DEMO 5: Deep Belief & Generative Autosopher    \n");
+    printf("==================================================\n");
+    printf("Invoking python deep_belief_generative_autosopher.py benchmark...\n\n");
+    int status = system("python3 deep_belief_generative_autosopher.py");
+    if (status != 0) {
+        printf("Error: Deep Belief benchmark failed or python3 environment missing.\n");
+    }
+}
+
 void run_interactive_hyperspace(void) {
     Node *library = NULL;
     int choice;
@@ -111,7 +122,8 @@ static void print_menu(void) {
     printf("2. Run Demo 2: Noise Detection & Transcendence Approximation\n");
     printf("3. Run Demo 3: Interactive Hyperspace Exploration\n");
     printf("4. Run Demo 4: Hybrid TensorFlow + Autosopher Benchmark\n");
-    printf("5. Run All Demos Sequentially\n");
+    printf("5. Run Demo 5: Deep Belief & Generative Autocoding\n");
+    printf("6. Run All Demos Sequentially\n");
     printf("0. Exit Suite\n");
     printf("Select option: ");
 }
@@ -127,13 +139,17 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[1], "--hybrid") == 0) {
             run_hybrid_tf_demo();
             return 0;
+        } else if (strcmp(argv[1], "--generative") == 0) {
+            run_generative_demo();
+            return 0;
         } else if (strcmp(argv[1], "--all") == 0) {
             run_forward_learning_demo();
             run_noise_transcendence_demo();
             run_hybrid_tf_demo();
+            run_generative_demo();
             return 0;
         } else {
-            printf("Usage: %s [--demo1 | --demo2 | --hybrid | --all]\n", argv[0]);
+            printf("Usage: %s [--demo1 | --demo2 | --hybrid | --generative | --all]\n", argv[0]);
             return 1;
         }
     }
@@ -159,15 +175,19 @@ int main(int argc, char *argv[]) {
                 run_hybrid_tf_demo();
                 break;
             case 5:
+                run_generative_demo();
+                break;
+            case 6:
                 run_forward_learning_demo();
                 run_noise_transcendence_demo();
                 run_hybrid_tf_demo();
+                run_generative_demo();
                 break;
             case 0:
                 printf("Exiting Autosopher Demo Suite. Goodbye!\n");
                 return 0;
             default:
-                printf("Invalid selection. Please choose 0-5.\n");
+                printf("Invalid selection. Please choose 0-6.\n");
                 break;
         }
     }
