@@ -47,6 +47,8 @@ Node._fields_ = [
     ('access_count', ctypes.c_int),
     ('epistemic_status', ctypes.c_int),
     ('version', ctypes.c_int),
+    ('deep_belief_code', ctypes.c_int),
+    ('generative_id', ctypes.c_int),
     ('left', ctypes.POINTER(Node)),
     ('right', ctypes.POINTER(Node))
 ]

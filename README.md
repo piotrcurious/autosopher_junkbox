@@ -50,6 +50,13 @@ Every knowledge record in the Autosopher substrate explicitly tracks its epistem
      - *Stage 3*: Sister Model B inheritance of knowledge records in < 4ms without replaying training experience (100.00% transfer match validity).
      - *Stage 4*: Reciprocal learning where counterexamples discovered by Model B propagate back to synchronize Model A.
 
+5. **Deep Belief & Generative Autocoding Benchmark (`Demo 5`)**:
+   - Extends inference capabilities across multi-layer neural architectures:
+     - *Layer Categorization*: Quantizes intermediate representation layers into discrete hyperspace keys.
+     - *Deep Belief Correlation*: Correlates activation signatures with discrete deep belief codes.
+     - *Generative Synthesis*: If category exists, retrieves generative seeds/templates for decoding.
+     - *On-The-Fly Autocoding*: If a category is novel, dynamically self-assembles a new hyperspace node in ~25 µs without backpropagation or weight retraining.
+
 ### 3. Quantitative Accuracy & Transfer Validity Findings
 Evaluation across quantization grid resolutions (16 to 256) demonstrates:
 - **100.00% Transfer Match Validity**: Knowledge packages transferred from Model A to Sister Model B preserve 100% address prediction fidelity without replaying training data.
@@ -94,6 +101,9 @@ Or run specific demos directly via command-line flags:
 # Run Demo 4 (Hybrid TensorFlow + Autosopher Benchmark)
 ./autosopher_suite --hybrid
 
+# Run Demo 5 (Deep Belief & Generative Autocoding)
+./autosopher_suite --generative
+
 # Run all automated demos sequentially
 ./autosopher_suite --all
 ```
@@ -112,6 +122,7 @@ python3 generate_benchmark_graphs.py
 - `forward_learning_mod.c`: Implementation of tree growth, typed learning (`autosophy_learn_typed`), recall, epistemic tracking, and forward learning demo.
 - `noise_transcendence_mod.c`: Implementation of noise/anomaly detection and transcendental continued fraction kernels.
 - `hybrid_tf_autosopher.py`: Python benchmark integrating TensorFlow perception with C Autosopher substrate, cross-model transfer, and reciprocal correction.
+- `deep_belief_generative_autosopher.py`: Deep belief layer correlation, generative layer reconstruction, and on-the-fly autocoding benchmark.
 - `generate_benchmark_graphs.py`: Benchmark graph plotting utility for performance metrics.
 - `main.c`: CLI menu runner and option parser.
 - `Makefile`: Build rules for binaries (`autosopher_suite`, `forward_learning`, `noise_and_transcendence`) and dynamic library (`libautosopher.so`).

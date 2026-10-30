@@ -14,6 +14,8 @@ Node* create_node(int f1, int f2, double payload, int outcome) {
     newNode->access_count = 1;
     newNode->epistemic_status = EPISTEMIC_GROUNDED;
     newNode->version = 1;
+    newNode->deep_belief_code = 0;
+    newNode->generative_id = 0;
     newNode->left = NULL;
     newNode->right = NULL;
     return newNode;
@@ -27,8 +29,7 @@ void free_tree(Node *root) {
     free(root);
 }
 
-// Autosophy "Self-Assembly" Learning Function:
-// Instantly grows or updates hyperspace tree structure without epochs or backprop.
+// Autosophy "Self-Assembly" Learning Function
 void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome) {
     autosophy_learn_typed(root, f1, f2, payload, outcome, EPISTEMIC_GROUNDED, 1);
 }
@@ -72,6 +73,67 @@ void autosophy_learn_typed(Node **root, int f1, int f2, double payload, int outc
     }
 }
 
+// Deep Belief Correlation & Inference Extension:
+// Looks up layer activation keys (f1, f2); if found, returns deep belief code and generative template id.
+int autosophy_correlate_deep_belief(Node *root, int f1, int f2, int *out_deep_belief_code, int *out_generative_id, double *out_seed) {
+    Node *current = root;
+    while (current != NULL) {
+        if (current->key_feature1 == f1 && current->key_feature2 == f2) {
+            if (out_deep_belief_code) *out_deep_belief_code = current->deep_belief_code;
+            if (out_generative_id) *out_generative_id = current->generative_id;
+            if (out_seed) *out_seed = current->data_payload;
+            return 1; // Category exists! Trigger generative layer reconstruction
+        }
+        if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+    }
+    return 0; // Category missing -> requires on-the-fly autocoding
+}
+
+// On-The-Fly Autocoding for New Category:
+// Instantly self-assembles a new hyperspace node, assigning deep belief code and generative ID dynamically without retraining
+int autosophy_autocode_category(Node **root, int f1, int f2, int deep_belief_code, int generative_id, double seed, int outcome) {
+    if (*root == NULL) {
+        *root = create_node(f1, f2, seed, outcome);
+        (*root)->deep_belief_code = deep_belief_code;
+        (*root)->generative_id = generative_id;
+        return 1;
+    }
+
+    Node *current = *root;
+    while (1) {
+        if (current->key_feature1 == f1 && current->key_feature2 == f2) {
+            current->deep_belief_code = deep_belief_code;
+            current->generative_id = generative_id;
+            current->data_payload = seed;
+            current->outcome = outcome;
+            current->access_count++;
+            return 0; // Updated existing
+        }
+
+        if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
+            if (current->left == NULL) {
+                current->left = create_node(f1, f2, seed, outcome);
+                current->left->deep_belief_code = deep_belief_code;
+                current->left->generative_id = generative_id;
+                return 1; // Autocoded new node
+            }
+            current = current->left;
+        } else {
+            if (current->right == NULL) {
+                current->right = create_node(f1, f2, seed, outcome);
+                current->right->deep_belief_code = deep_belief_code;
+                current->right->generative_id = generative_id;
+                return 1; // Autocoded new node
+            }
+            current = current->right;
+        }
+    }
+}
+
 // Instant Address-Based Recall
 int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome) {
     return autosophy_recall_typed(root, f1, f2, out_payload, out_outcome, NULL, NULL);
@@ -85,7 +147,7 @@ int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int 
             if (out_outcome) *out_outcome = current->outcome;
             if (out_status) *out_status = current->epistemic_status;
             if (out_version) *out_version = current->version;
-            return 1; // Found
+            return 1;
         }
         if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
             current = current->left;
@@ -93,7 +155,7 @@ int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int 
             current = current->right;
         }
     }
-    return 0; // Not found (un-encountered pattern)
+    return 0;
 }
 
 // Update Epistemic status & version propagation
@@ -143,9 +205,9 @@ void print_tree_structure(Node *root, int level) {
     print_tree_structure(root->right, level + 1);
 
     for (int i = 0; i < level; i++) printf("    ");
-    printf("[%d,%d] (hits:%d, out:%d, status:%d, v:%d)\n",
+    printf("[%d,%d] (hits:%d, out:%d, db:%d, gen:%d)\n",
            root->key_feature1, root->key_feature2, root->access_count, root->outcome,
-           root->epistemic_status, root->version);
+           root->deep_belief_code, root->generative_id);
 
     print_tree_structure(root->left, level + 1);
 }
@@ -159,8 +221,8 @@ void sweep_tree_noise(Node *root, int min_frequency_threshold, int *noise_count,
         printf("Node [%d, %d] (hits: %d) => FLAGGED AS NOISE / TRANSIENT\n",
                root->key_feature1, root->key_feature2, root->access_count);
     } else {
-        printf("Node [%d, %d] (hits: %d, status: %d) => VERIFIED KNOWLEDGE NODE\n",
-               root->key_feature1, root->key_feature2, root->access_count, root->epistemic_status);
+        printf("Node [%d, %d] (hits: %d, db:%d) => VERIFIED KNOWLEDGE NODE\n",
+               root->key_feature1, root->key_feature2, root->access_count, root->deep_belief_code);
     }
 
     sweep_tree_noise(root->left, min_frequency_threshold, noise_count, total_count);

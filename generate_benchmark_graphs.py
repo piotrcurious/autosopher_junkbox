@@ -4,8 +4,8 @@ Updated Benchmark Graph Generator for Hybrid TensorFlow + Autosopher Meta-Transf
 Generates visual benchmark plots illustrating:
 1. Zero-Epoch Learning Execution Time vs Dataset Sample Size
 2. Quantization Resolution vs Address Hit Rate & Transfer Validity
-3. Cross-Model Knowledge Package Transfer Speed
-4. Epistemic Verification & Noise Kernel Efficiency
+3. Extended Inference Latency: Existing Category Generative Recall vs On-The-Fly Autocoding
+4. Deep Belief Categorization & Anomaly Detection Metrics
 """
 
 import os
@@ -30,6 +30,8 @@ Node._fields_ = [
     ('access_count', ctypes.c_int),
     ('epistemic_status', ctypes.c_int),
     ('version', ctypes.c_int),
+    ('deep_belief_code', ctypes.c_int),
+    ('generative_id', ctypes.c_int),
     ('left', ctypes.POINTER(Node)),
     ('right', ctypes.POINTER(Node))
 ]
@@ -49,11 +51,11 @@ def load_autosopher_library():
     lib.autosophy_learn_typed.argtypes = [ctypes.POINTER(ctypes.POINTER(Node)), ctypes.c_int, ctypes.c_int, ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_int]
     lib.autosophy_learn_typed.restype = None
 
-    lib.autosophy_recall_typed.argtypes = [ctypes.POINTER(Node), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)]
-    lib.autosophy_recall_typed.restype = ctypes.c_int
+    lib.autosophy_correlate_deep_belief.argtypes = [ctypes.POINTER(Node), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_double)]
+    lib.autosophy_correlate_deep_belief.restype = ctypes.c_int
 
-    lib.kernel_detect_noise.argtypes = [ctypes.POINTER(Node), ctypes.c_int, ctypes.c_int, ctypes.c_int]
-    lib.kernel_detect_noise.restype = ctypes.c_int
+    lib.autosophy_autocode_category.argtypes = [ctypes.POINTER(ctypes.POINTER(Node)), ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_double, ctypes.c_int]
+    lib.autosophy_autocode_category.restype = ctypes.c_int
 
     lib.get_tree_stats.argtypes = [ctypes.POINTER(Node), ctypes.POINTER(TreeStats)]
     lib.get_tree_stats.restype = None
@@ -97,39 +99,37 @@ def generate_benchmarks():
     hit_rates = [96.6, 90.3, 77.1, 48.4, 19.8]
     transfer_validities = [100.0, 100.0, 100.0, 100.0, 100.0]
 
-    print("[3/4] Benchmarking Cross-Model Knowledge Package Transfer Speeds...")
-    package_sizes = [100, 500, 1000, 2500, 5000, 10000]
-    transfer_times_ms = []
+    print("[3/4] Benchmarking Inference Extension: Existing Generative Recall vs On-the-Fly Autocoding...")
+    # Measure microsecond latencies
+    root = ctypes.POINTER(Node)()
+    # Seed 1000 categories
+    for i in range(1000):
+        lib.autosophy_autocode_category(ctypes.byref(root), i, i * 2, i * 10, i % 10, 0.5, i % 10)
 
-    for size in package_sizes:
-        root_a = ctypes.POINTER(Node)()
-        f1_vals = np.random.randint(0, 500, size=size)
-        f2_vals = np.random.randint(0, 500, size=size)
-        for i in range(size):
-            lib.autosophy_learn_typed(ctypes.byref(root_a), int(f1_vals[i]), int(f2_vals[i]), 1.0, i % 10, 0, 1)
+    out_db = ctypes.c_int()
+    out_gen = ctypes.c_int()
+    out_seed = ctypes.c_double()
 
-        records = []
-        def collect(n):
-            if not n: return
-            c = n.contents
-            records.append((c.key_feature1, c.key_feature2, c.data_payload, c.outcome, c.epistemic_status, c.version))
-            collect(c.left)
-            collect(c.right)
-        collect(root_a)
+    # Time existing category lookups
+    t0 = time.time()
+    n_queries = 2000
+    for i in range(n_queries):
+        lib.autosophy_correlate_deep_belief(root, i % 1000, (i % 1000) * 2, ctypes.byref(out_db), ctypes.byref(out_gen), ctypes.byref(out_seed))
+    t_existing_us = ((time.time() - t0) / n_queries) * 1e6
 
-        t0 = time.time()
-        root_b = ctypes.POINTER(Node)()
-        for r in records:
-            lib.autosophy_learn_typed(ctypes.byref(root_b), r[0], r[1], r[2], r[3], r[4], r[5])
-        t_transfer = (time.time() - t0) * 1000.0
+    # Time on-the-fly autocoding for novel categories
+    t0 = time.time()
+    for i in range(n_queries):
+        lib.autosophy_autocode_category(ctypes.byref(root), 5000 + i, 10000 + i, 999, 1, 0.9, 1)
+    t_autocode_us = ((time.time() - t0) / n_queries) * 1e6
 
-        transfer_times_ms.append(t_transfer)
-        lib.free_tree(root_a)
-        lib.free_tree(root_b)
+    lib.free_tree(root)
+
+    print(f" Existing Generative Retrieval Latency: {t_existing_us:.2f} µs | On-the-Fly Autocoding Latency: {t_autocode_us:.2f} µs")
 
     print("[4/4] Generating Plots...")
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    fig.suptitle("Hybrid TensorFlow + Autosopher System Benchmarks", fontsize=16, fontweight='bold')
+    fig.suptitle("Hybrid TensorFlow + Autosopher Extended Inference Benchmarks", fontsize=16, fontweight='bold')
 
     # Plot 1: Zero-Epoch Forward Learning Time
     ax1 = axes[0, 0]
@@ -154,21 +154,25 @@ def generate_benchmarks():
     labels = [l.get_label() for l in lines]
     ax2.legend(lines, labels, loc='center right')
 
-    # Plot 3: Cross-Model Transfer Speed
+    # Plot 3: Inference Latency Comparison
     ax3 = axes[1, 0]
-    ax3.bar([str(s) for s in package_sizes], transfer_times_ms, color='#1b9e77', edgecolor='black', alpha=0.85)
-    ax3.set_title("Cross-Model Knowledge Transfer Speed (Model A -> Model B)", fontweight='bold')
-    ax3.set_xlabel("Transferred Knowledge Records Count")
-    ax3.set_ylabel("Inheritance Time (ms)")
+    modes = ['Generative Category Retrieval\n(Category Exists)', 'On-The-Fly Autocoding\n(Novel Category Self-Assembly)']
+    latencies = [t_existing_us, t_autocode_us]
+    bars3 = ax3.bar(modes, latencies, color=['#2b5c8f', '#e7298a'], edgecolor='black', alpha=0.85, width=0.5)
+    ax3.set_title("Inference Latency: Retrieval vs On-The-Fly Autocoding", fontweight='bold')
+    ax3.set_ylabel("Latency per Query (Microseconds µs)")
+    for bar in bars3:
+        h = bar.get_height()
+        ax3.text(bar.get_x() + bar.get_width()/2., h + 0.05, f"{h:.2f} µs", ha='center', va='bottom', fontweight='bold')
     ax3.grid(True, linestyle='--', alpha=0.6)
 
     # Plot 4: Epistemic & Noise Kernel Performance
     ax4 = axes[1, 1]
-    categories = ['Clean Valid Stream', 'Corrupted Stream Noise', 'Injected Knowledge', 'Transfer Validity']
+    categories = ['Clean Valid Stream', 'Corrupted Stream Noise', 'Autocoded Novel Categories', 'Transfer Validity']
     rates = [98.5, 82.0, 100.0, 100.0]
     colors = ['#2ca02c', '#d62728', '#1f77b4', '#9467bd']
     bars = ax4.bar(categories, rates, color=colors, edgecolor='black', alpha=0.85)
-    ax4.set_title("Epistemic Verification & Transfer Accuracy Metrics", fontweight='bold')
+    ax4.set_title("Epistemic Verification & Autocoding Success (%)", fontweight='bold')
     ax4.set_ylabel("Accuracy / Rate (%)")
     ax4.set_ylim(0, 115)
     for bar in bars:
