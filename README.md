@@ -1,19 +1,39 @@
 # Autosopher Junkbox & Functional Demo Suite
 
-An implementation of Autosophy concepts (self-assembling knowledge trees, content-addressable hyperspace memory, zero-epoch forward learning, frequency-based noise detection, and transcendental continued fraction approximation).
+An implementation of Autosophy concepts (self-assembling knowledge trees, content-addressable hyperspace memory, zero-epoch forward learning, frequency-based noise detection, epistemic status tracking, cross-model knowledge transfer, and transcendental continued fraction approximation).
 
 ## Overview
 
 Unlike traditional neural networks that rely on backpropagation, weight tuning, and multiple training epochs, **Autosophy** self-assembles knowledge directly into content-addressable hyperspace tree structures.
 
-This demo suite expands the original conceptual sketches into a fully functional C-based demo system.
+This demo suite expands original conceptual sketches into a fully functional C and Python hybrid system, implementing the meta-transformer architecture described in the `junkbox` research notes.
+
+![Benchmark Results](docs/benchmark_results.png)
 
 ---
 
-## Features & Demos
+## Key Architecture & Features
+
+### 1. Multi-Level Hybrid Architecture
+- **Level 1 (Neural Perception Layer)**: TensorFlow CNN encoder processes raw input streams (e.g. MNIST benchmark images) into continuous latent representations and quantizes them into discrete feature addresses.
+- **Level 2 (Associative Memory & Epistemic Substrate)**: Fast C-based content-addressable hyperspace memory tree handles zero-epoch forward learning, instant address recall, and frequency-based noise detection.
+- **Level 3 (Knowledge Package Transfer)**: Explicit, model-independent serialization of knowledge records, procedures, and dependency rules, allowing sister models to inherit capabilities without replaying training contexts or copying weights.
+- **Level 4 (Reciprocal Learning & Correction Propagation)**: Dependency graph tracking that flags superseded assertions (`CONTRADICTED`) and propagates updated knowledge versions across sister deployments.
+
+### 2. Epistemic Status Tracking
+Every knowledge record in the Autosopher substrate explicitly tracks its epistemic status:
+- `GROUNDED`: Direct empirical observation or validated intervention.
+- `DERIVED`: Computed via logical rules or executable procedures.
+- `HYPOTHETICAL`: Candidate claim pending verification.
+- `CONTRADICTED`: Inconsistent with newer empirical evidence or constraints.
+- `UNRESOLVED`: Ambiguous state requiring further evidence.
+
+---
+
+## Automated Demos & Benchmarks
 
 1. **Zero-Epoch Forward Learning (`Demo 1`)**:
-   - Self-assembles input feature patterns into content-addressable tree nodes without matrix multiplication or epochs.
+   - Self-assembles input feature patterns into content-addressable tree nodes without matrix multiplication or backpropagation epochs.
    - Demonstrates instant address-based recall for non-linear logic relationships (e.g. XOR gate pattern simulation).
 
 2. **Noise Detection & Transcendental Approximation Kernels (`Demo 2`)**:
@@ -24,7 +44,11 @@ This demo suite expands the original conceptual sketches into a fully functional
    - Allows users to dynamically inject custom feature patterns, perform address queries, inspect hyperspace memory statistics (node count, depth, byte footprint), and view ASCII tree visualizations.
 
 4. **Hybrid TensorFlow + Autosopher Benchmark (`Demo 4`)**:
-   - Combines TensorFlow neural perception (feature extraction & quantization on public MNIST benchmark) with Autosopher hyperspace trees for zero-epoch learning, instant address recall, frequency-based noise detection, and incremental zero-epoch knowledge acquisition without neural weight updates.
+   - Executes the full 4-stage pipeline on the public MNIST benchmark:
+     - *Stage 1*: Grounded knowledge acquisition (Model A).
+     - *Stage 2*: Autosopher consolidation into typed knowledge packages.
+     - *Stage 3*: Sister Model B inheritance of knowledge records in < 4ms without replaying training experience.
+     - *Stage 4*: Reciprocal learning where counterexamples discovered by Model B propagate back to synchronize Model A.
 
 ---
 
@@ -32,10 +56,11 @@ This demo suite expands the original conceptual sketches into a fully functional
 
 ### Prerequisites
 - C Compiler (`gcc` or `clang` supporting C99)
+- Python 3.12+ with `tensorflow`, `numpy`, `matplotlib`, `seaborn`
 - `make`
 
 ### Compilation
-To build the complete demo suite and individual standalone executables, run:
+To build the complete demo suite, standalone executables, and `libautosopher.so` shared library:
 ```bash
 make
 ```
@@ -68,19 +93,20 @@ Or run specific demos directly via command-line flags:
 ./autosopher_suite --all
 ```
 
-#### Standalone Executables
-The original conceptual entrypoints are also compiled as standalone executables:
+#### Generating Benchmark Figures
+To run the performance benchmark generator and produce visual plots:
 ```bash
-./forward_learning
-./noise_and_transcendence
+python3 generate_benchmark_graphs.py
 ```
 
 ---
 
-## Architecture & Code Structure
+## Code Structure
 
-- `autosopher.h`: Core data structures (`Node`, `TreeStats`), function declarations, and kernel interfaces.
-- `forward_learning_mod.c`: Implementation of tree growth, recall, stats calculation, visualizer, and Forward Learning demo.
-- `noise_transcendence_mod.c`: Implementation of anomaly detection and transcendental continued fraction kernels.
-- `main.c`: Interactive CLI runner and CLI option parser.
-- `Makefile`: Build rules for `autosopher_suite`, `forward_learning`, and `noise_and_transcendence`.
+- `autosopher.h`: C core header declarations, node structs, epistemic status enums, and kernel prototypes.
+- `forward_learning_mod.c`: Implementation of tree growth, typed learning (`autosophy_learn_typed`), recall, epistemic tracking, and forward learning demo.
+- `noise_transcendence_mod.c`: Implementation of noise/anomaly detection and transcendental continued fraction kernels.
+- `hybrid_tf_autosopher.py`: Python benchmark integrating TensorFlow perception with C Autosopher substrate, cross-model transfer, and reciprocal correction.
+- `generate_benchmark_graphs.py`: Benchmark graph plotting utility for performance metrics.
+- `main.c`: CLI menu runner and option parser.
+- `Makefile`: Build rules for binaries (`autosopher_suite`, `forward_learning`, `noise_and_transcendence`) and dynamic library (`libautosopher.so`).
