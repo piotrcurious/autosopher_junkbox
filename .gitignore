@@ -1,0 +1,7 @@
+*.o
+autosopher_suite
+forward_learning
+noise_and_transcendence
+libautosopher.so
+__pycache__/
+*.pyc

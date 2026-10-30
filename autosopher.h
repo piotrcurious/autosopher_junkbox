@@ -52,5 +52,6 @@ double kernel_approximate_transcendental(int address_depth);
 void run_forward_learning_demo(void);
 void run_noise_transcendence_demo(void);
 void run_interactive_hyperspace(void);
+void run_hybrid_tf_demo(void);
 
 #endif // AUTOSOPHER_H
