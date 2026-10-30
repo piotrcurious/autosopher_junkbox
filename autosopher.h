@@ -13,6 +13,15 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+// Epistemic Status Enum
+typedef enum {
+    EPISTEMIC_GROUNDED = 0,
+    EPISTEMIC_DERIVED = 1,
+    EPISTEMIC_HYPOTHETICAL = 2,
+    EPISTEMIC_CONTRADICTED = 3,
+    EPISTEMIC_UNRESOLVED = 4
+} EpistemicStatus;
+
 // Autosopher Hyperspace Node Structure
 typedef struct Node {
     int key_feature1;
@@ -20,6 +29,8 @@ typedef struct Node {
     double data_payload;
     int outcome;           // Discrete outcome (e.g., classification / logic gate)
     int access_count;      // Frequency tracking for noise detection
+    int epistemic_status;  // Epistemic status tracking (0: Grounded, 1: Derived, etc.)
+    int version;           // Record version for dependency updates
     struct Node *left;
     struct Node *right;
 } Node;
@@ -37,14 +48,17 @@ void free_tree(Node *root);
 
 // Autosophy Learning & Recall
 void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome);
+void autosophy_learn_typed(Node **root, int f1, int f2, double payload, int outcome, int status, int version);
 int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome);
+int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int *out_outcome, int *out_status, int *out_version);
 
 // Analysis & Stats
 void get_tree_stats(Node *root, TreeStats *stats);
 void print_tree_structure(Node *root, int level);
 void sweep_tree_noise(Node *root, int min_frequency_threshold, int *noise_count, int *total_count);
 
-// Kernels
+// Epistemic Update & Propagation Kernels
+int kernel_update_epistemic_status(Node *root, int f1, int f2, int new_status, int new_version);
 int kernel_detect_noise(Node *root, int f1, int f2, int min_frequency_threshold);
 double kernel_approximate_transcendental(int address_depth);
 

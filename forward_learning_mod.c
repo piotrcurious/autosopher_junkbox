@@ -12,6 +12,8 @@ Node* create_node(int f1, int f2, double payload, int outcome) {
     newNode->data_payload = payload;
     newNode->outcome = outcome;
     newNode->access_count = 1;
+    newNode->epistemic_status = EPISTEMIC_GROUNDED;
+    newNode->version = 1;
     newNode->left = NULL;
     newNode->right = NULL;
     return newNode;
@@ -28,8 +30,14 @@ void free_tree(Node *root) {
 // Autosophy "Self-Assembly" Learning Function:
 // Instantly grows or updates hyperspace tree structure without epochs or backprop.
 void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome) {
+    autosophy_learn_typed(root, f1, f2, payload, outcome, EPISTEMIC_GROUNDED, 1);
+}
+
+void autosophy_learn_typed(Node **root, int f1, int f2, double payload, int outcome, int status, int version) {
     if (*root == NULL) {
         *root = create_node(f1, f2, payload, outcome);
+        (*root)->epistemic_status = status;
+        (*root)->version = version;
         return;
     }
 
@@ -39,18 +47,24 @@ void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome) {
             current->data_payload = payload;
             current->outcome = outcome;
             current->access_count++;
+            current->epistemic_status = status;
+            current->version = version;
             return;
         }
 
         if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
             if (current->left == NULL) {
                 current->left = create_node(f1, f2, payload, outcome);
+                current->left->epistemic_status = status;
+                current->left->version = version;
                 break;
             }
             current = current->left;
         } else {
             if (current->right == NULL) {
                 current->right = create_node(f1, f2, payload, outcome);
+                current->right->epistemic_status = status;
+                current->right->version = version;
                 break;
             }
             current = current->right;
@@ -60,11 +74,17 @@ void autosophy_learn(Node **root, int f1, int f2, double payload, int outcome) {
 
 // Instant Address-Based Recall
 int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome) {
+    return autosophy_recall_typed(root, f1, f2, out_payload, out_outcome, NULL, NULL);
+}
+
+int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int *out_outcome, int *out_status, int *out_version) {
     Node *current = root;
     while (current != NULL) {
         if (current->key_feature1 == f1 && current->key_feature2 == f2) {
             if (out_payload) *out_payload = current->data_payload;
             if (out_outcome) *out_outcome = current->outcome;
+            if (out_status) *out_status = current->epistemic_status;
+            if (out_version) *out_version = current->version;
             return 1; // Found
         }
         if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
@@ -74,6 +94,24 @@ int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_o
         }
     }
     return 0; // Not found (un-encountered pattern)
+}
+
+// Update Epistemic status & version propagation
+int kernel_update_epistemic_status(Node *root, int f1, int f2, int new_status, int new_version) {
+    Node *current = root;
+    while (current != NULL) {
+        if (current->key_feature1 == f1 && current->key_feature2 == f2) {
+            current->epistemic_status = new_status;
+            current->version = new_version;
+            return 1;
+        }
+        if (f1 < current->key_feature1 || (f1 == current->key_feature1 && f2 < current->key_feature2)) {
+            current = current->left;
+        } else {
+            current = current->right;
+        }
+    }
+    return 0;
 }
 
 // Tree Analysis Helper
@@ -105,8 +143,9 @@ void print_tree_structure(Node *root, int level) {
     print_tree_structure(root->right, level + 1);
 
     for (int i = 0; i < level; i++) printf("    ");
-    printf("[%d,%d] (hits:%d, out:%d)\n",
-           root->key_feature1, root->key_feature2, root->access_count, root->outcome);
+    printf("[%d,%d] (hits:%d, out:%d, status:%d, v:%d)\n",
+           root->key_feature1, root->key_feature2, root->access_count, root->outcome,
+           root->epistemic_status, root->version);
 
     print_tree_structure(root->left, level + 1);
 }
@@ -120,8 +159,8 @@ void sweep_tree_noise(Node *root, int min_frequency_threshold, int *noise_count,
         printf("Node [%d, %d] (hits: %d) => FLAGGED AS NOISE / TRANSIENT\n",
                root->key_feature1, root->key_feature2, root->access_count);
     } else {
-        printf("Node [%d, %d] (hits: %d) => VERIFIED KNOWLEDGE NODE\n",
-               root->key_feature1, root->key_feature2, root->access_count);
+        printf("Node [%d, %d] (hits: %d, status: %d) => VERIFIED KNOWLEDGE NODE\n",
+               root->key_feature1, root->key_feature2, root->access_count, root->epistemic_status);
     }
 
     sweep_tree_noise(root->left, min_frequency_threshold, noise_count, total_count);
