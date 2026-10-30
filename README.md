@@ -23,6 +23,9 @@ This demo suite expands the original conceptual sketches into a fully functional
 3. **Interactive Hyperspace Memory Explorer (`Demo 3`)**:
    - Allows users to dynamically inject custom feature patterns, perform address queries, inspect hyperspace memory statistics (node count, depth, byte footprint), and view ASCII tree visualizations.
 
+4. **Hybrid TensorFlow + Autosopher Benchmark (`Demo 4`)**:
+   - Combines TensorFlow neural perception (feature extraction & quantization on public MNIST benchmark) with Autosopher hyperspace trees for zero-epoch learning, instant address recall, frequency-based noise detection, and incremental zero-epoch knowledge acquisition without neural weight updates.
+
 ---
 
 ## Building and Running
@@ -57,6 +60,9 @@ Or run specific demos directly via command-line flags:
 
 # Run Demo 2 (Noise Detection & Transcendence)
 ./autosopher_suite --demo2
+
+# Run Demo 4 (Hybrid TensorFlow + Autosopher Benchmark)
+./autosopher_suite --hybrid
 
 # Run all automated demos sequentially
 ./autosopher_suite --all

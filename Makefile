@@ -3,9 +3,12 @@ CFLAGS = -Wall -Wextra -std=c99 -O2
 LDFLAGS = -lm
 
 OBJS = main.o forward_learning_mod.o noise_transcendence_mod.o
-TARGETS = autosopher_suite forward_learning noise_and_transcendence
+TARGETS = autosopher_suite forward_learning noise_and_transcendence libautosopher.so
 
 all: $(TARGETS)
+
+libautosopher.so: forward_learning_mod.o noise_transcendence_mod.o
+	$(CC) $(CFLAGS) -shared $^ -o $@ $(LDFLAGS)
 
 autosopher_suite: $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
@@ -17,7 +20,7 @@ noise_and_transcendence: noise_and_transcendence.o forward_learning_mod.o noise_
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
 clean:
 	rm -f *.o $(TARGETS)
