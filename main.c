@@ -36,8 +36,10 @@ void run_interactive_hyperspace(void) {
         printf("2. Recall Pattern Address [Feature 1, Feature 2]\n");
         printf("3. Display Hyperspace Tree & Statistics\n");
         printf("4. Run Anomaly Detection Sweep on Hyperspace\n");
-        printf("5. Return to Main Menu\n");
-        printf("Enter choice (1-5): ");
+        printf("5. Save Hyperspace Memory to File\n");
+        printf("6. Load Hyperspace Memory from File\n");
+        printf("7. Return to Main Menu\n");
+        printf("Enter choice (1-7): ");
 
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n'); // clear buffer
@@ -100,6 +102,26 @@ void run_interactive_hyperspace(void) {
             sweep_tree_noise(library, threshold, &noise_count, &total_count);
             printf("Sweep Complete: %d / %d nodes flagged as noise/transient.\n", noise_count, total_count);
         } else if (choice == 5) {
+            char filepath[256];
+            printf("Enter destination filepath (e.g., hyperspace.dat): ");
+            if (scanf("%255s", filepath) != 1) continue;
+            if (autosophy_save_tree(library, filepath)) {
+                printf("SUCCESS: Hyperspace memory persisted to %s\n", filepath);
+            } else {
+                printf("ERROR: Failed to save hyperspace tree.\n");
+            }
+        } else if (choice == 6) {
+            char filepath[256];
+            printf("Enter source filepath to load: ");
+            if (scanf("%255s", filepath) != 1) continue;
+            if (autosophy_load_tree(&library, filepath)) {
+                TreeStats stats;
+                get_tree_stats(library, &stats);
+                printf("SUCCESS: Loaded hyperspace memory from %s (Total Nodes: %d)\n", filepath, stats.node_count);
+            } else {
+                printf("ERROR: Failed to load hyperspace tree from %s\n", filepath);
+            }
+        } else if (choice == 7) {
             break;
         } else {
             printf("Invalid selection.\n");
