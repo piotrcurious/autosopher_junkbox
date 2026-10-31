@@ -79,5 +79,6 @@ void run_noise_transcendence_demo(void);
 void run_interactive_hyperspace(void);
 void run_hybrid_tf_demo(void);
 void run_generative_demo(void);
+void run_knowledge_service_demo(void);
 
 #endif // AUTOSOPHER_H

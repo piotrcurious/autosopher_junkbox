@@ -57,6 +57,12 @@ Every knowledge record in the Autosopher substrate explicitly tracks its epistem
      - *Generative Synthesis*: If category exists, retrieves generative seeds/templates for decoding.
      - *On-The-Fly Autocoding*: If a category is novel, dynamically self-assembles a new hyperspace node in ~25 µs without backpropagation or weight retraining.
 
+6. **Autosopher Typed Knowledge Service & Invalidation Engine (`Demo 6`)**:
+   - Implements Section 4 of Junkbox 1.md:
+     - *Typed Model*: Entities, Assertions, Rules, Artifacts, and Derivations.
+     - *Tool Operations*: `resolve`, `traverse`, `execute`, `propose`, `validate`, `commit`, `dependencies`.
+     - *Reactive Invalidation*: Downstream derivations automatically recompute when upstream source assertions are updated or invalidated.
+
 ### 3. Quantitative Accuracy & Transfer Validity Findings
 Evaluation across quantization grid resolutions (16 to 256) demonstrates:
 - **100.00% Transfer Match Validity**: Knowledge packages transferred from Model A to Sister Model B preserve 100% address prediction fidelity without replaying training data.
@@ -104,6 +110,9 @@ Or run specific demos directly via command-line flags:
 # Run Demo 5 (Deep Belief & Generative Autocoding)
 ./autosopher_suite --generative
 
+# Run Demo 6 (Typed Knowledge Service & Dependency Engine)
+./autosopher_suite --service
+
 # Run all automated demos sequentially
 ./autosopher_suite --all
 ```
@@ -123,6 +132,7 @@ python3 generate_benchmark_graphs.py
 - `noise_transcendence_mod.c`: Implementation of noise/anomaly detection and transcendental continued fraction kernels.
 - `hybrid_tf_autosopher.py`: Python benchmark integrating TensorFlow perception with C Autosopher substrate, cross-model transfer, and reciprocal correction.
 - `deep_belief_generative_autosopher.py`: Deep belief layer correlation, generative layer reconstruction, and on-the-fly autocoding benchmark.
+- `autosopher_service_demo.py`: Typed knowledge model service with tool interface and reactive dependency invalidation engine.
 - `generate_benchmark_graphs.py`: Benchmark graph plotting utility for performance metrics.
 - `main.c`: CLI menu runner and option parser.
 - `Makefile`: Build rules for binaries (`autosopher_suite`, `forward_learning`, `noise_and_transcendence`) and dynamic library (`libautosopher.so`).
