@@ -22,6 +22,17 @@ void run_generative_demo(void) {
     }
 }
 
+void run_knowledge_service_demo(void) {
+    printf("\n==================================================\n");
+    printf("   DEMO 6: Autosopher Typed Knowledge Service     \n");
+    printf("==================================================\n");
+    printf("Invoking python autosopher_service_demo.py...\n\n");
+    int status = system("python3 autosopher_service_demo.py");
+    if (status != 0) {
+        printf("Error: Knowledge service demo failed or python3 environment missing.\n");
+    }
+}
+
 void run_interactive_hyperspace(void) {
     Node *library = NULL;
     int choice;
@@ -145,7 +156,8 @@ static void print_menu(void) {
     printf("3. Run Demo 3: Interactive Hyperspace Exploration\n");
     printf("4. Run Demo 4: Hybrid TensorFlow + Autosopher Benchmark\n");
     printf("5. Run Demo 5: Deep Belief & Generative Autocoding\n");
-    printf("6. Run All Demos Sequentially\n");
+    printf("6. Run Demo 6: Typed Knowledge Service & Invalidation Engine\n");
+    printf("7. Run All Demos Sequentially\n");
     printf("0. Exit Suite\n");
     printf("Select option: ");
 }
@@ -164,14 +176,18 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[1], "--generative") == 0) {
             run_generative_demo();
             return 0;
+        } else if (strcmp(argv[1], "--service") == 0) {
+            run_knowledge_service_demo();
+            return 0;
         } else if (strcmp(argv[1], "--all") == 0) {
             run_forward_learning_demo();
             run_noise_transcendence_demo();
             run_hybrid_tf_demo();
             run_generative_demo();
+            run_knowledge_service_demo();
             return 0;
         } else {
-            printf("Usage: %s [--demo1 | --demo2 | --hybrid | --generative | --all]\n", argv[0]);
+            printf("Usage: %s [--demo1 | --demo2 | --hybrid | --generative | --service | --all]\n", argv[0]);
             return 1;
         }
     }
@@ -200,16 +216,20 @@ int main(int argc, char *argv[]) {
                 run_generative_demo();
                 break;
             case 6:
+                run_knowledge_service_demo();
+                break;
+            case 7:
                 run_forward_learning_demo();
                 run_noise_transcendence_demo();
                 run_hybrid_tf_demo();
                 run_generative_demo();
+                run_knowledge_service_demo();
                 break;
             case 0:
                 printf("Exiting Autosopher Demo Suite. Goodbye!\n");
                 return 0;
             default:
-                printf("Invalid selection. Please choose 0-6.\n");
+                printf("Invalid selection. Please choose 0-7.\n");
                 break;
         }
     }
