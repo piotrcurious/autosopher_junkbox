@@ -55,6 +55,10 @@ void autosophy_learn_typed(Node **root, int f1, int f2, double payload, int outc
 int autosophy_recall(Node *root, int f1, int f2, double *out_payload, int *out_outcome);
 int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int *out_outcome, int *out_status, int *out_version);
 
+// Range and Associative Nearest Recall (Extending beyond exact match)
+int autosophy_range_query(Node *root, int f1_min, int f1_max, int f2_min, int f2_max, int max_results, int out_f1[], int out_f2[], int out_outcome[]);
+int autosophy_nearest_recall(Node *root, int f1, int f2, int *best_f1, int *best_f2, int *out_outcome, double *out_distance);
+
 // Deep Belief, Inference Extension & On-The-Fly Autocoding
 int autosophy_correlate_deep_belief(Node *root, int f1, int f2, int *out_deep_belief_code, int *out_generative_id, double *out_seed);
 int autosophy_autocode_category(Node **root, int f1, int f2, int deep_belief_code, int generative_id, double seed, int outcome);
@@ -80,5 +84,6 @@ void run_interactive_hyperspace(void);
 void run_hybrid_tf_demo(void);
 void run_generative_demo(void);
 void run_knowledge_service_demo(void);
+void run_comparison_benchmark_demo(void);
 
 #endif // AUTOSOPHER_H

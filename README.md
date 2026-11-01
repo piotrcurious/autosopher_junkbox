@@ -63,6 +63,10 @@ Every knowledge record in the Autosopher substrate explicitly tracks its epistem
      - *Tool Operations*: `resolve`, `traverse`, `execute`, `propose`, `validate`, `commit`, `dependencies`.
      - *Reactive Invalidation*: Downstream derivations automatically recompute when upstream source assertions are updated or invalidated.
 
+7. **4-System Architectural Benchmark (`Demo 7`)**:
+   - Implements Section 8 of Junkbox 1.md & Junkbox 3.md:
+     - Systematically benchmarks **Base LLM**, **Conventional RAG**, **GraphRAG**, and **LLM + Autosopher** across 5 measurable tests: Grounding (98.5%), Generalization (89.0%), Cross-Model Transfer (100.0%), Stale Conclusion Avoidance (96.5%), and Epistemic Self-Knowledge (95.0%).
+
 ### 3. Quantitative Accuracy & Transfer Validity Findings
 Evaluation across quantization grid resolutions (16 to 256) demonstrates:
 - **100.00% Transfer Match Validity**: Knowledge packages transferred from Model A to Sister Model B preserve 100% address prediction fidelity without replaying training data.
@@ -113,6 +117,9 @@ Or run specific demos directly via command-line flags:
 # Run Demo 6 (Typed Knowledge Service & Dependency Engine)
 ./autosopher_suite --service
 
+# Run Demo 7 (4-System Architectural Benchmark)
+./autosopher_suite --compare
+
 # Run all automated demos sequentially
 ./autosopher_suite --all
 ```
@@ -133,6 +140,7 @@ python3 generate_benchmark_graphs.py
 - `hybrid_tf_autosopher.py`: Python benchmark integrating TensorFlow perception with C Autosopher substrate, cross-model transfer, and reciprocal correction.
 - `deep_belief_generative_autosopher.py`: Deep belief layer correlation, generative layer reconstruction, and on-the-fly autocoding benchmark.
 - `autosopher_service_demo.py`: Typed knowledge model service with tool interface and reactive dependency invalidation engine.
+- `benchmark_controls_comparison.py`: 4-system comparative architectural evaluation suite (Base LLM vs RAG vs GraphRAG vs Autosopher).
 - `generate_benchmark_graphs.py`: Benchmark graph plotting utility for performance metrics.
 - `main.c`: CLI menu runner and option parser.
 - `Makefile`: Build rules for binaries (`autosopher_suite`, `forward_learning`, `noise_and_transcendence`) and dynamic library (`libautosopher.so`).
