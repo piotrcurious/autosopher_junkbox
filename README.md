@@ -67,6 +67,13 @@ Every knowledge record in the Autosopher substrate explicitly tracks its epistem
    - Implements Section 8 of Junkbox 1.md & Junkbox 3.md:
      - Systematically benchmarks **Base LLM**, **Conventional RAG**, **GraphRAG**, and **LLM + Autosopher** across 5 measurable tests: Grounding (98.5%), Generalization (89.0%), Cross-Model Transfer (100.0%), Stale Conclusion Avoidance (96.5%), and Epistemic Self-Knowledge (95.0%).
 
+8. **Hybrid Language Model Demo (`Demo 8`)**:
+   - Evaluates standardized Natural Language Inference (SNLI/MNLI) sentence pairs:
+     - Encodes premise-hypothesis linguistic pairs via TensorFlow sequence embeddings into 2D differential semantic coordinates.
+     - Self-assembles semantic inference relationships (Entailment, Neutral, Contradiction) directly into Autosopher hyperspace memory in zero epochs.
+     - Performs exact and nearest-address associative inference retrieval.
+     - Demonstrates on-the-fly zero-epoch fact injection and epistemic status revision (e.g. retracting claims when contradicted).
+
 ### 3. Quantitative Accuracy & Transfer Validity Findings
 Evaluation across quantization grid resolutions (16 to 256) demonstrates:
 - **100.00% Transfer Match Validity**: Knowledge packages transferred from Model A to Sister Model B preserve 100% address prediction fidelity without replaying training data.
@@ -120,6 +127,9 @@ Or run specific demos directly via command-line flags:
 # Run Demo 7 (4-System Architectural Benchmark)
 ./autosopher_suite --compare
 
+# Run Demo 8 (Hybrid Language Model NLI Benchmark)
+./autosopher_suite --language
+
 # Run all automated demos sequentially
 ./autosopher_suite --all
 ```
@@ -141,6 +151,7 @@ python3 generate_benchmark_graphs.py
 - `deep_belief_generative_autosopher.py`: Deep belief layer correlation, generative layer reconstruction, and on-the-fly autocoding benchmark.
 - `autosopher_service_demo.py`: Typed knowledge model service with tool interface and reactive dependency invalidation engine.
 - `benchmark_controls_comparison.py`: 4-system comparative architectural evaluation suite (Base LLM vs RAG vs GraphRAG vs Autosopher).
+- `hybrid_language_model_demo.py`: Standardized natural language inference (NLI) benchmark integrating TensorFlow sequence encoding with Autosopher hyperspace memory.
 - `generate_benchmark_graphs.py`: Benchmark graph plotting utility for performance metrics.
 - `main.c`: CLI menu runner and option parser.
 - `Makefile`: Build rules for binaries (`autosopher_suite`, `forward_learning`, `noise_and_transcendence`) and dynamic library (`libautosopher.so`).

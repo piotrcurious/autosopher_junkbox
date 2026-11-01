@@ -85,5 +85,6 @@ void run_hybrid_tf_demo(void);
 void run_generative_demo(void);
 void run_knowledge_service_demo(void);
 void run_comparison_benchmark_demo(void);
+void run_language_demo(void);
 
 #endif // AUTOSOPHER_H
