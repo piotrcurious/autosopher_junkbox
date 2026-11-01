@@ -218,10 +218,17 @@ class AutosopherKnowledgeService:
 
             if deriv.rule_id in self.rules:
                 rule = self.rules[deriv.rule_id]
-                inputs = {
-                    "pump_flow": self.assertions["assert_pump_flow"].object,
-                    "circuit_resist": self.assertions["assert_ckt_resist"].object
-                }
+                inputs = {}
+                for inp_id in deriv.input_assertions:
+                    if inp_id in self.assertions:
+                        # Extract variable name from assertion predicate or id
+                        key = self.assertions[inp_id].predicate
+                        inputs[key] = self.assertions[inp_id].object
+                        # Also support direct alias mapping if rule specifies custom input names
+                        if "flow_rate" in inputs and "pump_flow" in rule.preconditions:
+                            inputs["pump_flow"] = inputs["flow_rate"]
+                        if "resistance" in inputs and "circuit_resist" in rule.preconditions:
+                            inputs["circuit_resist"] = inputs["resistance"]
                 try:
                     recomputed = rule.evaluate(inputs)
                     for out_id in deriv.output_assertions:
