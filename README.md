@@ -8,7 +8,10 @@ Unlike traditional neural networks that rely on backpropagation, weight tuning, 
 
 This demo suite expands original conceptual sketches into a fully functional C and Python hybrid system, implementing the meta-transformer architecture described in the `junkbox` research notes.
 
-![Benchmark Results](docs/benchmark_results.png)
+![Benchmark Performance Results](docs/benchmark_results.png)
+![Structural and Epistemic Evaluation](docs/structural_and_epistemic_eval.png)
+
+*For detailed empirical analysis, algorithmic depth proofs, latency breakdowns, and regression logs, see the complete [Test Report](docs/TEST_REPORT.md).*
 
 ---
 
@@ -77,7 +80,9 @@ Every knowledge record in the Autosopher substrate explicitly tracks its epistem
 ### 3. Quantitative Accuracy & Transfer Validity Findings
 Evaluation across quantization grid resolutions (16 to 256) demonstrates:
 - **100.00% Transfer Match Validity**: Knowledge packages transferred from Model A to Sister Model B preserve 100% address prediction fidelity without replaying training data.
-- **Quantization Resolution Trade-off**: Lower resolution grids (e.g. 16–32) produce high address hit rates (~90–97%), while higher resolutions (128–256) offer ultra-precise address keys for fine-grained classification.
+- **Quantization Resolution Trade-off**: Lower resolution grids (e.g. 16–32) produce high address hit rates (~90–98%), while higher resolutions (128–256) offer ultra-precise address keys for fine-grained classification.
+- **Structural Depth Invariance**: Self-balancing AVL hyperspace memory maintains strictly bounded $O(\log N)$ depth (depth $\le 13$ for 5,000 nodes) even under strictly sorted adversarial input streams.
+- **Microsecond Operational Latency**: Substrate memory recall executes in $\sim 0.8$ µs per query, while on-the-fly category autocoding self-assembles in $\sim 3.6$ µs without backpropagation.
 
 ---
 
@@ -134,10 +139,21 @@ Or run specific demos directly via command-line flags:
 ./autosopher_suite --all
 ```
 
-#### Generating Benchmark Figures
-To run the performance benchmark generator and produce visual plots:
+#### Running Tests & Generating Reports
+To run the comprehensive C test suite:
+```bash
+make test
+```
+
+To run the Python integration tests:
+```bash
+python3 test_integration.py
+```
+
+To generate the performance and structural benchmark visualization figures:
 ```bash
 python3 generate_benchmark_graphs.py
+python3 generate_extended_benchmark_report.py
 ```
 
 ---
