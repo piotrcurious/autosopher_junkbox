@@ -3,5 +3,6 @@ autosopher_suite
 forward_learning
 noise_and_transcendence
 libautosopher.so
+test_suite
 __pycache__/
 *.pyc
