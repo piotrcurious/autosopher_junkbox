@@ -190,6 +190,80 @@ int autosophy_recall_typed(Node *root, int f1, int f2, double *out_payload, int 
     return 0;
 }
 
+// Range Search in Hyperspace (Multi-dimensional bounding box query)
+static void range_query_recursive(Node *node, int f1_min, int f1_max, int f2_min, int f2_max,
+                                  int max_results, int *count, int out_f1[], int out_f2[], int out_outcome[]) {
+    if (!node || *count >= max_results) return;
+
+    if (node->key_feature1 >= f1_min) {
+        range_query_recursive(node->left, f1_min, f1_max, f2_min, f2_max, max_results, count, out_f1, out_f2, out_outcome);
+    }
+
+    if (*count < max_results &&
+        node->key_feature1 >= f1_min && node->key_feature1 <= f1_max &&
+        node->key_feature2 >= f2_min && node->key_feature2 <= f2_max) {
+        out_f1[*count] = node->key_feature1;
+        out_f2[*count] = node->key_feature2;
+        out_outcome[*count] = node->outcome;
+        (*count)++;
+    }
+
+    if (node->key_feature1 <= f1_max) {
+        range_query_recursive(node->right, f1_min, f1_max, f2_min, f2_max, max_results, count, out_f1, out_f2, out_outcome);
+    }
+}
+
+int autosophy_range_query(Node *root, int f1_min, int f1_max, int f2_min, int f2_max,
+                          int max_results, int out_f1[], int out_f2[], int out_outcome[]) {
+    int count = 0;
+    range_query_recursive(root, f1_min, f1_max, f2_min, f2_max, max_results, &count, out_f1, out_f2, out_outcome);
+    return count;
+}
+
+// Nearest-Address Associative Recall (Approximate Match)
+static void nearest_recall_recursive(Node *node, int target_f1, int target_f2,
+                                     Node **best_node, double *min_dist) {
+    if (!node) return;
+
+    double dx = (double)(node->key_feature1 - target_f1);
+    double dy = (double)(node->key_feature2 - target_f2);
+    double dist = sqrt(dx * dx + dy * dy);
+
+    if (dist < *min_dist) {
+        *min_dist = dist;
+        *best_node = node;
+    }
+
+    // Branch pruning based on f1 coordinate difference
+    if (target_f1 < node->key_feature1) {
+        nearest_recall_recursive(node->left, target_f1, target_f2, best_node, min_dist);
+        if (fabs((double)(node->key_feature1 - target_f1)) < *min_dist) {
+            nearest_recall_recursive(node->right, target_f1, target_f2, best_node, min_dist);
+        }
+    } else {
+        nearest_recall_recursive(node->right, target_f1, target_f2, best_node, min_dist);
+        if (fabs((double)(node->key_feature1 - target_f1)) < *min_dist) {
+            nearest_recall_recursive(node->left, target_f1, target_f2, best_node, min_dist);
+        }
+    }
+}
+
+int autosophy_nearest_recall(Node *root, int f1, int f2, int *best_f1, int *best_f2, int *out_outcome, double *out_distance) {
+    if (!root) return 0;
+    Node *best = NULL;
+    double min_dist = 1e9;
+    nearest_recall_recursive(root, f1, f2, &best, &min_dist);
+
+    if (best) {
+        if (best_f1) *best_f1 = best->key_feature1;
+        if (best_f2) *best_f2 = best->key_feature2;
+        if (out_outcome) *out_outcome = best->outcome;
+        if (out_distance) *out_distance = min_dist;
+        return 1;
+    }
+    return 0;
+}
+
 // Update Epistemic status & version propagation
 int kernel_update_epistemic_status(Node *root, int f1, int f2, int new_status, int new_version) {
     Node *current = root;
@@ -334,6 +408,14 @@ void run_forward_learning_demo(void) {
         } else {
             printf("Address Query [%d, %d] => UNKNOWN PATTERN\n", f1, f2);
         }
+    }
+
+    printf("\n--- Phase 3: Nearest-Address Associative Recall Query ---\n");
+    int best_f1, best_f2, near_out;
+    double dist;
+    if (autosophy_nearest_recall(hyperspace_library, 0, 2, &best_f1, &best_f2, &near_out, &dist)) {
+        printf("Nearest Query [0, 2] => Closest Address [%d, %d], Outcome: %d, Distance: %.2f\n",
+               best_f1, best_f2, near_out, dist);
     }
 
     free_tree(hyperspace_library);

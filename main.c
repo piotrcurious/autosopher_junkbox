@@ -33,6 +33,18 @@ void run_knowledge_service_demo(void) {
     }
 }
 
+void run_comparison_benchmark_demo(void) {
+    printf("\n==================================================\n");
+    printf("   DEMO 7: 4-System Architectural Benchmark       \n");
+    printf("   (Base LLM vs RAG vs GraphRAG vs Autosopher)    \n");
+    printf("==================================================\n");
+    printf("Invoking python benchmark_controls_comparison.py...\n\n");
+    int status = system("python3 benchmark_controls_comparison.py");
+    if (status != 0) {
+        printf("Error: Comparison benchmark failed or python3 environment missing.\n");
+    }
+}
+
 void run_interactive_hyperspace(void) {
     Node *library = NULL;
     int choice;
@@ -157,7 +169,8 @@ static void print_menu(void) {
     printf("4. Run Demo 4: Hybrid TensorFlow + Autosopher Benchmark\n");
     printf("5. Run Demo 5: Deep Belief & Generative Autocoding\n");
     printf("6. Run Demo 6: Typed Knowledge Service & Invalidation Engine\n");
-    printf("7. Run All Demos Sequentially\n");
+    printf("7. Run Demo 7: 4-System Architectural Benchmark (Base vs RAG vs Autosopher)\n");
+    printf("8. Run All Demos Sequentially\n");
     printf("0. Exit Suite\n");
     printf("Select option: ");
 }
@@ -179,15 +192,19 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[1], "--service") == 0) {
             run_knowledge_service_demo();
             return 0;
+        } else if (strcmp(argv[1], "--compare") == 0) {
+            run_comparison_benchmark_demo();
+            return 0;
         } else if (strcmp(argv[1], "--all") == 0) {
             run_forward_learning_demo();
             run_noise_transcendence_demo();
             run_hybrid_tf_demo();
             run_generative_demo();
             run_knowledge_service_demo();
+            run_comparison_benchmark_demo();
             return 0;
         } else {
-            printf("Usage: %s [--demo1 | --demo2 | --hybrid | --generative | --service | --all]\n", argv[0]);
+            printf("Usage: %s [--demo1 | --demo2 | --hybrid | --generative | --service | --compare | --all]\n", argv[0]);
             return 1;
         }
     }
@@ -219,17 +236,21 @@ int main(int argc, char *argv[]) {
                 run_knowledge_service_demo();
                 break;
             case 7:
+                run_comparison_benchmark_demo();
+                break;
+            case 8:
                 run_forward_learning_demo();
                 run_noise_transcendence_demo();
                 run_hybrid_tf_demo();
                 run_generative_demo();
                 run_knowledge_service_demo();
+                run_comparison_benchmark_demo();
                 break;
             case 0:
                 printf("Exiting Autosopher Demo Suite. Goodbye!\n");
                 return 0;
             default:
-                printf("Invalid selection. Please choose 0-7.\n");
+                printf("Invalid selection. Please choose 0-8.\n");
                 break;
         }
     }
